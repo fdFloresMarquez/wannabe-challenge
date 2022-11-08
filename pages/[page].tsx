@@ -1,8 +1,9 @@
 import { GetServerSideProps, NextPage } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import { Character, GetCharactersResults } from '@/types/characters';
+import CharactersList from '@/components/CharactersList';
 
 type Props = {
   characters: Character[];
@@ -17,27 +18,14 @@ const Page: NextPage<Props> = ({ characters, previous, next }) => {
 
   return (
     <>
-      <main>
-        <header className="mt-3">
-          <h1>Star Wars Characters</h1>
-          <hr />
-        </header>
-      </main>
-
-      <ul className="list-group">
-        {characters.map((character: Character) => (
-          <li key={character.name} className="list-group-item">
-            {character.name}
-          </li>
-        ))}
-      </ul>
+      <CharactersList characters={characters} title={`Star Wars Characters Page: ${page}`} />
 
       <div className="container-sm text-center mt-5">
         <button className="btn btn-primary me-5" disabled={previous ? false : true} type="button">
           <Link href={`/${page - 1}`}>Previous Page</Link>
         </button>
         <button className="btn btn-primary" disabled={next ? false : true} type="button">
-          <Link href={`/${page + 1}`}>Next Page</Link>
+          <Link href={`/${page ? page + 1 : 2}`}>Next Page</Link>
         </button>
       </div>
     </>

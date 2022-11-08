@@ -1,8 +1,10 @@
-import Head from 'next/head';
 import { GetServerSideProps, NextPage } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { Character, GetCharactersResults } from '@/types/characters';
+import CharactersList from '@/components/CharactersList';
 
 type Props = {
   characters: Character[];
@@ -11,6 +13,10 @@ type Props = {
 };
 
 export const Home: NextPage<Props> = ({ characters, previous, next }) => {
+  const route = useRouter();
+
+  const page = Number(route.query.page);
+
   return (
     <>
       <Head>
@@ -19,27 +25,14 @@ export const Home: NextPage<Props> = ({ characters, previous, next }) => {
         <link href="/favicon.ico" rel="icon" />
       </Head>
 
-      <main>
-        <header className="mt-3">
-          <h1>Star Wars Characters</h1>
-          <hr />
-        </header>
-      </main>
-
-      <ul className="list-group">
-        {characters.map((character: Character) => (
-          <li key={character.name} className="list-group-item">
-            {character.name}
-          </li>
-        ))}
-      </ul>
+      <CharactersList characters={characters} title="Star Wars Characters" />
 
       <div className="container-sm text-center mt-5">
         <button className="btn btn-primary me-5" disabled={previous ? false : true} type="button">
-          Previous Page
+          <Link href={`/${page - 1}`}>Previous Page</Link>
         </button>
         <button className="btn btn-primary" disabled={next ? false : true} type="button">
-          <Link href="/2">Next Page</Link>
+          <Link href={`/${page ? page + 1 : 2}`}>Next Page</Link>
         </button>
       </div>
     </>
