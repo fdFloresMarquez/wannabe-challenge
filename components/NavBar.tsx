@@ -1,18 +1,45 @@
-type Props = {};
+import React from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import useForm from 'hooks';
 
-const NavBar: React.FC<Props> = () => {
+type FormData = {
+  search: string;
+};
+
+const NavBar: React.FC = () => {
+  const router = useRouter();
+  const { search, handleChange } = useForm<FormData>({ search: '' });
+
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    event.preventDefault();
+    router.push({
+      pathname: '/search',
+      query: { q: search },
+    });
+  };
+
   return (
-    <nav className="navbar navbar-dark">
+    <nav className="navbar navbar-dark bg-primary">
       <div className="container-fluid">
-        <a className="navbar-brand">Wannabe Challenge</a>
+        <Link className="navbar-brand" href="/">
+          Wannabe Challenge
+        </Link>
         <form className="d-flex" role="search">
           <input
             aria-label="Search"
             className="form-control me-2"
+            name="search"
             placeholder="Search"
             type="search"
+            value={search}
+            onChange={(event) => handleChange(event)}
           />
-          <button className="btn btn-outline-success" type="submit">
+          <button
+            className="btn btn-success"
+            type="submit"
+            onClick={(event) => handleSubmit(event)}
+          >
             Search
           </button>
         </form>
