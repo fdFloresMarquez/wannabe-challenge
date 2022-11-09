@@ -35,16 +35,23 @@ const Page: NextPage<Props> = ({ characters, previous, next }) => {
 export default Page;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const page = context.query.page;
+  try {
+    const page = context.query.page;
+    const response = await fetch(`https://swapi.dev/api/people/?page=${page}`);
+    const { previous, next, results }: GetCharactersResults = await response.json();
 
-  const response = await fetch(`https://swapi.dev/api/people/?page=${page}`);
-  const { previous, next, results }: GetCharactersResults = await response.json();
+    if (!response.ok) {
+      return { notFound: true };
+    }
 
-  return {
-    props: {
-      characters: results,
-      previous,
-      next,
-    },
-  };
+    return {
+      props: {
+        characters: results,
+        previous,
+        next,
+      },
+    };
+  } catch (err) {
+    return { notFound: true };
+  }
 };

@@ -42,14 +42,22 @@ export const Home: NextPage<Props> = ({ characters, previous, next }) => {
 export default Home;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const response = await fetch('https://swapi.dev/api/people/');
-  const { previous, next, results }: GetCharactersResults = await response.json();
+  try {
+    const response = await fetch('https://swapi.dev/api/people/');
+    const { previous, next, results }: GetCharactersResults = await response.json();
 
-  return {
-    props: {
-      characters: results,
-      previous,
-      next,
-    },
-  };
+    if (!response.ok) {
+      return { notFound: true };
+    }
+
+    return {
+      props: {
+        characters: results,
+        previous,
+        next,
+      },
+    };
+  } catch (err) {
+    return { notFound: true };
+  }
 };

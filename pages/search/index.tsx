@@ -11,6 +11,8 @@ const Search: React.FC<Props> = ({ characters }) => {
   return (
     <>
       <CharactersList characters={characters} title={`Search Results:`} />
+
+      {characters.length === 0 && <span>No characters Found</span>}
     </>
   );
 };
@@ -18,16 +20,24 @@ const Search: React.FC<Props> = ({ characters }) => {
 export default Search;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const searchQuery = context.query.q;
+  try {
+    const searchQuery = context.query.q;
 
-  const response = await fetch(`https://swapi.dev/api/people/?search=${searchQuery}`);
-  const { previous, next, results }: GetCharactersResults = await response.json();
+    const response = await fetch(`https://swapi.dev/api/people/?search=${searchQuery}`);
+    const { previous, next, results }: GetCharactersResults = await response.json();
 
-  return {
-    props: {
-      characters: results,
-      previous,
-      next,
-    },
-  };
+    if (!response.ok) {
+      return { notFound: true };
+    }
+
+    return {
+      props: {
+        characters: results,
+        previous,
+        next,
+      },
+    };
+  } catch (err) {
+    return { notFound: true };
+  }
 };
