@@ -8,19 +8,24 @@ type Props = {
   title: string;
 };
 
-// This component renders inside every page that has a list of characters
+/**
+ * This component renders inside every page that has a list of characters
+ * It needs an array of characters and a title to show the information.
+ */
 
 const CharactersList: React.FC<Props> = ({ characters, title }) => {
   return (
     <>
       <main>
         <header className="mt-3">
-          <h1 className="text-light">{title}</h1>
+          <h1>{title}</h1>
           <hr />
         </header>
       </main>
 
       <ul className="list-group">
+        {/* Maps to the array of characters and adds a title and a link to the route with Character
+        Id */}
         {characters.map((character: Character) => (
           <li
             key={character.name}
